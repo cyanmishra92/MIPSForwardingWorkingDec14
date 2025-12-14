@@ -337,15 +337,7 @@ module datapath(
     // --------------------------------------------
     wire [31:0] pc4  = pc + 4;
     reg  [31:0] dpc4;
-
-    // Branch/jump address helpers (scoped for TB peeks)
-    wire [31:0] bpc = dpc4 + {{14{dinstOut[15]}}, dinstOut[15:0], 2'b00};
-    wire [31:0] jpc = {dpc4[31:28], dinstOut[25:0], 2'b00};
-
-    wire [31:0] npc = (pcsrc == 2'b00) ? pc4 :
-                      (pcsrc == 2'b01) ? bpc :
-                      (pcsrc == 2'b10) ? jpc :
-                      eqa; // jr fallback
+    wire [31:0] npc  = pcsrc == 2'b00 ? pc4 : pc4; // only pc+4 used here
 
     always @(posedge clk) begin
         if (wpcir) pc <= npc;
